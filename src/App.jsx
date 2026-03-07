@@ -21,14 +21,15 @@ const CSS = `
   --line-green: #06C755;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html, body { overflow-x: hidden; width: 100%; }
-html { scroll-behavior:smooth; }
+html { scroll-behavior:smooth; overflow-x:clip; }
 body {
   background: var(--bg); color: var(--text);
   font-family: 'Instrument Sans', sans-serif;
   font-size: 15px; line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  overflow-x:clip; max-width:100vw;
 }
+#root { overflow-x:clip; max-width:100vw; }
 
 .reveal { opacity:0; transform:translateY(32px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
 .reveal.visible { opacity:1; transform:translateY(0); }
@@ -78,8 +79,8 @@ body {
 .hero-stat-num { font-family:'Outfit',sans-serif; font-size:28px; font-weight:800; color:var(--green); line-height:1; }
 .hero-stat-label { font-size:11px; color:var(--text3); margin-top:4px; letter-spacing:0.02em; }
 
-.hero-visual { position:relative; display:flex; justify-content:center; overflow:hidden; }
-.phone-wrap { position:relative; width:290px; }
+.hero-visual { position:relative; display:flex; justify-content:center; overflow:clip; padding:0 30px; }
+.phone-wrap { position:relative; width:290px; overflow:visible; }
 .phone-shell { background:linear-gradient(160deg,var(--card2),#0E1525); border:1px solid var(--border2); border-radius:36px; padding:14px; box-shadow:0 0 0 1px rgba(0,200,83,0.06),0 40px 100px rgba(0,0,0,0.65),0 0 80px rgba(0,200,83,0.04); animation:float 7s ease-in-out infinite; }
 @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
 .phone-notch { width:100px; height:6px; background:#0E1525; border-radius:0 0 10px 10px; margin:0 auto 8px; }
@@ -101,8 +102,8 @@ body {
 .mini-chart { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 10px; height:48px; position:relative; overflow:hidden; }
 .mini-chart-label { font-size:7px; letter-spacing:0.12em; color:var(--text3); margin-bottom:2px; font-weight:600; }
 .chart-line { position:absolute; bottom:8px; left:10px; right:10px; top:22px; }
-.float-badge { position:absolute; right:-20px; top:50px; background:var(--card2); border:1px solid var(--border2); border-radius:12px; padding:10px 14px; box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:float 7s ease-in-out infinite 1.2s; white-space:nowrap; z-index:2; }
-.float-badge2 { position:absolute; left:-24px; bottom:70px; background:var(--card2); border:1px solid var(--border2); border-radius:12px; padding:10px 14px; box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:float 7s ease-in-out infinite 2.4s; white-space:nowrap; z-index:2; }
+.float-badge { position:absolute; right:-10px; top:50px; background:var(--card2); border:1px solid var(--border2); border-radius:12px; padding:10px 14px; box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:float 7s ease-in-out infinite 1.2s; white-space:nowrap; z-index:2; }
+.float-badge2 { position:absolute; left:-10px; bottom:70px; background:var(--card2); border:1px solid var(--border2); border-radius:12px; padding:10px 14px; box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:float 7s ease-in-out infinite 2.4s; white-space:nowrap; z-index:2; }
 .badge-label { font-size:8px; letter-spacing:0.1em; color:var(--text3); margin-bottom:2px; font-weight:600; }
 .badge-val { font-family:'Outfit',sans-serif; font-size:18px; font-weight:800; color:var(--green); }
 .badge-sub { font-size:9px; color:var(--text3); }
@@ -426,7 +427,7 @@ export default function CoachProofLanding() {
   }, []);
 
   return (
-    <div ref={rootRef} style={{overflowX:'hidden',width:'100%'}}>
+    <div ref={rootRef} style={{overflowX:'clip',maxWidth:'100vw'}}>
       <style>{CSS}</style>
 
       {/* NAV */}

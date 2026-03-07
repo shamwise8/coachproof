@@ -21,12 +21,12 @@ const CSS = `
   --line-green: #06C755;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { overflow-x: hidden; width: 100%; }
 html { scroll-behavior:smooth; }
 body {
   background: var(--bg); color: var(--text);
   font-family: 'Instrument Sans', sans-serif;
   font-size: 15px; line-height: 1.65;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -426,7 +426,7 @@ export default function CoachProofLanding() {
   }, []);
 
   return (
-    <div ref={rootRef}>
+    <div ref={rootRef} style={{overflowX:'hidden',width:'100%'}}>
       <style>{CSS}</style>
 
       {/* NAV */}

@@ -78,7 +78,7 @@ body {
 .hero-stat-num { font-family:'Outfit',sans-serif; font-size:28px; font-weight:800; color:var(--green); line-height:1; }
 .hero-stat-label { font-size:11px; color:var(--text3); margin-top:4px; letter-spacing:0.02em; }
 
-.hero-visual { position:relative; display:flex; justify-content:center; }
+.hero-visual { position:relative; display:flex; justify-content:center; overflow:hidden; }
 .phone-wrap { position:relative; width:290px; }
 .phone-shell { background:linear-gradient(160deg,var(--card2),#0E1525); border:1px solid var(--border2); border-radius:36px; padding:14px; box-shadow:0 0 0 1px rgba(0,200,83,0.06),0 40px 100px rgba(0,0,0,0.65),0 0 80px rgba(0,200,83,0.04); animation:float 7s ease-in-out infinite; }
 @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
@@ -113,7 +113,7 @@ body {
 .marquee-item { display:flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:0.04em; color:var(--text3); white-space:nowrap; }
 .marquee-dot { width:4px; height:4px; background:var(--green); border-radius:50%; flex-shrink:0; }
 
-.audience-section { padding:80px clamp(20px,4vw,48px); background:var(--card); border-bottom:1px solid var(--border); }
+.audience-section { padding:80px clamp(20px,4vw,48px); background:var(--card); border-bottom:1px solid var(--border); overflow:hidden; }
 .audience-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
 .audience-label { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--green); margin-bottom:16px; }
 .audience-label::before { content:''; width:20px; height:1px; background:var(--green); }
@@ -129,7 +129,7 @@ body {
 .audience-card-title { font-weight:700; font-size:14px; margin-bottom:4px; }
 .audience-card-desc { font-size:12px; color:var(--text3); line-height:1.5; }
 
-.cp-section { padding:100px clamp(20px,4vw,48px); }
+.cp-section { padding:100px clamp(20px,4vw,48px); overflow:hidden; }
 .section-inner { max-width:1200px; margin:0 auto; }
 .section-tag { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--green); margin-bottom:16px; }
 .section-tag::before { content:''; width:20px; height:1px; background:var(--green); }
@@ -169,7 +169,7 @@ body {
 .preview-pill.active { background:var(--green); color:#000; }
 .preview-pill.inactive { background:var(--card2); color:var(--text3); border:1px solid var(--border); }
 
-.results-section { background:var(--card); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.results-section { background:var(--card); border-top:1px solid var(--border); border-bottom:1px solid var(--border); overflow:hidden; }
 .results-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
 .proof-card { background:var(--card2); border:1px solid var(--border); border-radius:16px; overflow:hidden; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); }
 .proof-card:hover { transform:translateY(-6px); border-color:rgba(0,200,83,0.3); box-shadow:0 24px 64px rgba(0,0,0,0.4),0 0 40px rgba(0,200,83,0.05); }
@@ -192,7 +192,7 @@ body {
 .step-title { font-weight:700; font-size:15px; margin-bottom:8px; }
 .step-desc { color:var(--text3); font-size:13px; line-height:1.6; }
 
-.quote-section { padding:0 clamp(20px,4vw,48px) 80px; }
+.quote-section { padding:0 clamp(20px,4vw,48px) 80px; overflow:hidden; }
 .quote-inner { max-width:1200px; margin:0 auto; background:linear-gradient(145deg,rgba(0,200,83,0.05),rgba(16,185,129,0.02)); border:1px solid rgba(0,200,83,0.15); border-radius:20px; padding:44px; display:grid; grid-template-columns:auto 1fr; gap:32px; align-items:center; }
 .quote-avatar { width:60px; height:60px; background:var(--card2); border:2px solid rgba(0,200,83,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
 .quote-text { font-family:'Outfit',sans-serif; font-size:18px; font-weight:600; line-height:1.55; color:var(--text); margin-bottom:12px; }

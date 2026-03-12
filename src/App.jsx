@@ -438,7 +438,7 @@ export default function CoachProofLanding() {
           <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>Results</a>
           <a href="#how" onClick={(e) => { e.preventDefault(); scrollTo('how'); }}>How it works</a>
           <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo('pricing'); }}>Pricing</a>
-          <a href="#cta" className="nav-cta" onClick={(e) => { e.preventDefault(); scrollTo('cta'); }}>Get Early Access</a>
+          <a href="https://testflight.apple.com/join/BaS3HwKx" className="nav-cta" target="_blank" rel="noopener noreferrer">Download Beta</a>
         </div>
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           <span style={menuOpen ? {transform:'rotate(45deg) translate(5px,5px)'} : {}}/> 
@@ -458,7 +458,7 @@ export default function CoachProofLanding() {
             <h1 className="hero-title reveal reveal-d1">Close More.<br/><span className="green">Retain More.</span><br/><span className="dim">Prove Everything.</span></h1>
             <p className="hero-sub reveal reveal-d2">The CRM built for weight management coaches. Track body composition, capture before &amp; after photos, and turn your <strong>best results into a closing tool.</strong></p>
             <div className="hero-ctas reveal reveal-d3">
-              <a href="#cta" className="btn-primary" onClick={(e) => { e.preventDefault(); scrollTo('cta'); }}>Get Early Access →</a>
+              <a href="https://testflight.apple.com/join/BaS3HwKx" className="btn-primary" target="_blank" rel="noopener noreferrer">Download Beta →</a>
               <a href="#features" className="btn-secondary" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>See Features</a>
             </div>
             <div className="hero-stats reveal reveal-d4">
@@ -653,7 +653,7 @@ export default function CoachProofLanding() {
                 <li>Progress charts</li>
                 <li>English + Thai</li>
               </ul>
-              <a href="#cta" className="price-btn price-btn-outline" onClick={(e) => { e.preventDefault(); scrollTo('cta'); }}>Join Beta Free</a>
+              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-outline" target="_blank" rel="noopener noreferrer">Join Beta Free</a>
             </div>
             <div className="price-card featured reveal reveal-d2">
               <div className="price-badge">Best Value</div>
@@ -668,7 +668,7 @@ export default function CoachProofLanding() {
                 <li>Priority support via LINE</li>
                 <li>English + Thai</li>
               </ul>
-              <a href="#cta" className="price-btn price-btn-solid" onClick={(e) => { e.preventDefault(); scrollTo('cta'); }}>Get Early Access</a>
+              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-solid" target="_blank" rel="noopener noreferrer">Get Early Access</a>
             </div>
           </div>
           <div className="price-note">No credit card required · Free during beta · Cancel anytime</div>
@@ -683,7 +683,7 @@ export default function CoachProofLanding() {
           <h2 className="cta-title reveal">Your results deserve<br/><span className="green">better than a LINE chat.</span></h2>
           <p className="cta-sub reveal">CoachProof is launching on iOS. Join the beta now — early access members get Pro pricing locked in for life.</p>
           <div className="cta-buttons reveal">
-            <a href="#" className="line-btn">💬 สมัครผ่าน LINE / Join via LINE</a>
+            <a href="https://testflight.apple.com/join/BaS3HwKx" className="line-btn" target="_blank" rel="noopener noreferrer">📲 Download on TestFlight</a>
             <a href="mailto:hello@coachproof.app" className="email-btn">✉️ Email us</a>
           </div>
           <p className="cta-small reveal">ไม่ต้องใช้บัตรเครดิต · ฟรีช่วง Beta · ยกเลิกได้ตลอด</p>

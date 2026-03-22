@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import translations from "./translations";
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap');
@@ -54,6 +55,9 @@ body {
 .nav-links a:hover { color:var(--text); }
 .nav-cta { background:var(--green)!important; color:#000!important; padding:8px 20px!important; border-radius:8px!important; font-weight:700!important; font-size:13px!important; transition:all 0.2s!important; box-shadow:0 2px 12px rgba(0,200,83,0.25); }
 .nav-cta:hover { box-shadow:0 4px 20px rgba(0,200,83,0.4); transform:translateY(-1px); }
+.lang-toggle { display:flex; align-items:center; gap:2px; background:var(--card2); border:1px solid var(--border2); border-radius:8px; padding:3px; cursor:pointer; font-size:12px; font-weight:600; font-family:'Instrument Sans',sans-serif; margin-left:auto; }
+.lang-toggle span { padding:4px 10px; border-radius:6px; color:var(--text3); transition:all 0.2s; user-select:none; }
+.lang-toggle .lang-active { background:var(--green); color:#000; }
 .hamburger { display:none; background:none; border:none; cursor:pointer; width:32px; height:32px; flex-direction:column; align-items:center; justify-content:center; gap:5px; }
 .hamburger span { display:block; width:20px; height:2px; background:var(--text2); border-radius:2px; transition:all 0.3s; }
 
@@ -261,6 +265,7 @@ body {
   .nav-links.open a{font-size:16px;}
   .nav-cta{width:100%;text-align:center;}
   .hamburger{display:flex;}
+  .lang-toggle{margin-left:auto;margin-right:12px;}
   .hero{min-height:auto;padding-top:100px;padding-bottom:60px;}
   .hero-inner{text-align:center;}
   .hero-sub{margin-left:auto;margin-right:auto;}
@@ -390,15 +395,8 @@ const PreviewReminders = () => (
   </>
 );
 
-const FEATURES = [
-  { icon:'📊', title:'Body Composition Tracking', desc:'Log weight, fat%, visceral fat, muscle mass, BMI, body age, and BMR from your Tanita or InBody scale. Every metric, every session.', label:'Live Preview — Body Composition', Preview: PreviewBodyComp },
-  { icon:'📸', title:'Before / After Photos', desc:'4-angle photo capture per session. Swipeable before/after that your clients and prospects will actually want to see.', label:'Live Preview — Before / After Photos', Preview: PreviewPhotos },
-  { icon:'🏆', title:'CoachProofs — Your Showcase', desc:'Pin your best transformations. Stats, charts, before/after photos — polished and ready for any prospect meeting.', label:'Live Preview — CoachProofs Showcase', Preview: PreviewCoachProofs },
-  { icon:'📂', title:'Legacy Client Import', desc:"Already have great results? Digitize past client data and start using it in your pitch today. No starting from zero.", label:'Live Preview — Legacy Client Import', Preview: PreviewLegacy },
-  { icon:'🔔', title:'Smart Reminders', desc:"Automated check-in reminders at key milestones. Stay top of mind without manually tracking who's overdue.", label:'Live Preview — Smart Reminders', Preview: PreviewReminders },
-];
-
-const MARQUEE_ITEMS = ['Body Composition Tracking','Before / After Photos','CoachProofs Showcase','Legacy Client Import','Automated Check-In Reminders','English + ภาษาไทย','Progress Charts','Tanita / InBody Ready'];
+const FEATURE_ICONS = ['📊','📸','🏆','📂','🔔'];
+const FEATURE_PREVIEWS = [PreviewBodyComp, PreviewPhotos, PreviewCoachProofs, PreviewLegacy, PreviewReminders];
 
 // ── Reveal hook ──
 function useReveal() {
@@ -418,8 +416,12 @@ function useReveal() {
 export default function CoachProofLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
+  const [lang, setLang] = useState(() => localStorage.getItem('cp-lang') || 'en');
+  useEffect(() => { localStorage.setItem('cp-lang', lang); }, [lang]);
+  const t = translations[lang];
   const rootRef = useReveal();
-  const ActivePreview = FEATURES[activeFeature].Preview;
+  const features = t.features.list.map((f, i) => ({ ...f, icon: FEATURE_ICONS[i], Preview: FEATURE_PREVIEWS[i] }));
+  const ActivePreview = FEATURE_PREVIEWS[activeFeature];
 
   const scrollTo = useCallback((id) => {
     setMenuOpen(false);
@@ -434,15 +436,19 @@ export default function CoachProofLanding() {
       <nav className="cp-nav">
         <div className="nav-logo"><div className="nav-icon">📊</div>Coach<span>Proof</span></div>
         <div className={`nav-links${menuOpen ? ' open' : ''}`}>
-          <a href="#features" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>Features</a>
-          <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>Results</a>
-          <a href="#how" onClick={(e) => { e.preventDefault(); scrollTo('how'); }}>How it works</a>
-          <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo('pricing'); }}>Pricing</a>
-          <a href="https://testflight.apple.com/join/BaS3HwKx" className="nav-cta" target="_blank" rel="noopener noreferrer">Download Beta</a>
+          <a href="#features" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>{t.nav.features}</a>
+          <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>{t.nav.results}</a>
+          <a href="#how" onClick={(e) => { e.preventDefault(); scrollTo('how'); }}>{t.nav.howItWorks}</a>
+          <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo('pricing'); }}>{t.nav.pricing}</a>
+          <a href="https://testflight.apple.com/join/BaS3HwKx" className="nav-cta" target="_blank" rel="noopener noreferrer">{t.nav.downloadBeta}</a>
         </div>
+        <button className="lang-toggle" onClick={() => setLang(lang === 'en' ? 'th' : 'en')} aria-label="Switch language">
+          <span className={lang === 'en' ? 'lang-active' : ''}>EN</span>
+          <span className={lang === 'th' ? 'lang-active' : ''}>TH</span>
+        </button>
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-          <span style={menuOpen ? {transform:'rotate(45deg) translate(5px,5px)'} : {}}/> 
-          <span style={menuOpen ? {opacity:0} : {}}/> 
+          <span style={menuOpen ? {transform:'rotate(45deg) translate(5px,5px)'} : {}}/>
+          <span style={menuOpen ? {opacity:0} : {}}/>
           <span style={menuOpen ? {transform:'rotate(-45deg) translate(5px,-5px)'} : {}}/>
         </button>
       </nav>
@@ -454,15 +460,15 @@ export default function CoachProofLanding() {
         <div className="hero-noise"/>
         <div className="hero-inner">
           <div>
-            <div className="hero-badge reveal">Now in Beta · iOS TestFlight</div>
-            <h1 className="hero-title reveal reveal-d1">Close More.<br/><span className="green">Retain More.</span><br/><span className="dim">Prove Everything.</span></h1>
-            <p className="hero-sub reveal reveal-d2">The CRM built for weight management coaches. Track body composition, capture before &amp; after photos, and turn your <strong>best results into a closing tool.</strong></p>
+            <div className="hero-badge reveal">{t.hero.badge}</div>
+            <h1 className="hero-title reveal reveal-d1">{t.hero.title1}<br/><span className="green">{t.hero.title2}</span><br/><span className="dim">{t.hero.title3}</span></h1>
+            <p className="hero-sub reveal reveal-d2" dangerouslySetInnerHTML={{__html: t.hero.sub}}/>
             <div className="hero-ctas reveal reveal-d3">
-              <a href="https://testflight.apple.com/join/BaS3HwKx" className="btn-primary" target="_blank" rel="noopener noreferrer">Download Beta →</a>
-              <a href="#features" className="btn-secondary" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>See Features</a>
+              <a href="https://testflight.apple.com/join/BaS3HwKx" className="btn-primary" target="_blank" rel="noopener noreferrer">{t.hero.ctaPrimary}</a>
+              <a href="#features" className="btn-secondary" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>{t.hero.ctaSecondary}</a>
             </div>
             <div className="hero-stats reveal reveal-d4">
-              {[['8','Metrics tracked'],['4','Photo angles'],['2×','EN + ภาษาไทย'],['0','Spreadsheets needed']].map(([n,l],i) => (
+              {t.hero.stats.map(([n,l],i) => (
                 <div key={i}><div className="hero-stat-num">{n}</div><div className="hero-stat-label">{l}</div></div>
               ))}
             </div>
@@ -510,7 +516,7 @@ export default function CoachProofLanding() {
       {/* MARQUEE */}
       <div className="marquee-wrap">
         <div className="marquee-track">
-          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+          {[...t.marquee, ...t.marquee].map((item, i) => (
             <div className="marquee-item" key={i}><span className="marquee-dot"/>{item}</div>
           ))}
         </div>
@@ -520,22 +526,17 @@ export default function CoachProofLanding() {
       <div className="audience-section">
         <div className="audience-inner reveal">
           <div>
-            <div className="audience-label">Built for coaches</div>
-            <div className="audience-title">Stop pitching with screenshots.<br/>Start closing with proof.</div>
-            <p className="audience-desc">If you're a weight management coach who's ever scrolled through LINE chats to find a client's before photo during a meeting — CoachProof replaces that with a tap.</p>
+            <div className="audience-label">{t.audience.label}</div>
+            <div className="audience-title">{t.audience.title1}<br/>{t.audience.title2}</div>
+            <p className="audience-desc">{t.audience.desc}</p>
             <div className="audience-checks">
-              {['Health and weight management coaches running any program','Coaches with past results in LINE chats or paper records','Team leaders who need a showcase for Diamond meetings'].map((t,i) => (
-                <div className="audience-check" key={i}><div className="audience-check-icon">✓</div><span>{t}</span></div>
+              {t.audience.checks.map((check,i) => (
+                <div className="audience-check" key={i}><div className="audience-check-icon">✓</div><span>{check}</span></div>
               ))}
             </div>
           </div>
           <div className="audience-cards">
-            {[
-              {icon:'📉',title:'The Problem',desc:'Client results scattered across LINE chats, spreadsheets, and InBody printouts. Impossible to present professionally.'},
-              {icon:'✨',title:'The Fix',desc:'One app. All your client data, photos, and charts. Pull up any client transformation in 2 seconds, mid-conversation.'},
-              {icon:'⏱️',title:'Legacy Import',desc:'Already have great results? Import past clients immediately — no waiting 90 days to build new showcase data.'},
-              {icon:'🤝',title:'Close Rate',desc:'Real numbers close prospects. When they see tracked, measured transformations — not just talk — they sign up.'},
-            ].map((c,i) => (
+            {t.audience.cards.map((c,i) => (
               <div className={`audience-card reveal reveal-d${i+1}`} key={i}>
                 <div className="audience-card-icon">{c.icon}</div>
                 <div className="audience-card-title">{c.title}</div>
@@ -549,12 +550,12 @@ export default function CoachProofLanding() {
       {/* FEATURES */}
       <section className="cp-section" id="features">
         <div className="section-inner">
-          <div className="section-tag reveal">Features</div>
-          <h2 className="section-title reveal">Everything a coach needs<br/>to close and retain.</h2>
-          <p className="section-sub reveal">Built for weight management coaches in Thailand. Not a generic fitness app — a closing tool.</p>
+          <div className="section-tag reveal">{t.features.tag}</div>
+          <h2 className="section-title reveal">{t.features.title1}<br/>{t.features.title2}</h2>
+          <p className="section-sub reveal">{t.features.sub}</p>
           <div className="features-layout">
             <div className="feature-list">
-              {FEATURES.map((f, i) => (
+              {features.map((f, i) => (
                 <div key={i} className={`feature-item reveal${i === activeFeature ? ' active' : ''}`} onClick={() => setActiveFeature(i)}>
                   <div className="fi-header"><div className="fi-icon">{f.icon}</div><div className="fi-title">{f.title}</div></div>
                   <div className="fi-desc">{f.desc}</div>
@@ -562,7 +563,7 @@ export default function CoachProofLanding() {
               ))}
             </div>
             <div className="feature-preview reveal">
-              <div className="preview-label">{FEATURES[activeFeature].label}</div>
+              <div className="preview-label">{features[activeFeature].label}</div>
               <div className="preview-content" key={activeFeature}><ActivePreview/></div>
             </div>
           </div>
@@ -572,19 +573,15 @@ export default function CoachProofLanding() {
       {/* RESULTS */}
       <section className="cp-section results-section" id="results">
         <div className="section-inner">
-          <div className="section-tag reveal">Results</div>
-          <h2 className="section-title reveal">Real transformations.<br/>Real data.</h2>
-          <p className="section-sub reveal">These aren't testimonials. They're tracked, measured results — the kind that close prospects on the spot.</p>
+          <div className="section-tag reveal">{t.results.tag}</div>
+          <h2 className="section-title reveal">{t.results.title1}<br/>{t.results.title2}</h2>
+          <p className="section-sub reveal">{t.results.sub}</p>
           <div className="results-grid">
-            {[
-              {name:'Client A · 12-week program',before:'🧍‍♀️',after:'🏃‍♀️',metrics:[['−17 kg','WEIGHT'],['−13%','BODY FAT'],['−12 yrs','BODY AGE'],['−5','VISCERAL FAT']]},
-              {name:'Client B · 8-week program',before:'🧍',after:'🏋️',metrics:[['−9 kg','WEIGHT'],['−8.5%','BODY FAT'],['−8 yrs','BODY AGE'],['−4','VISCERAL FAT']]},
-              {name:'Client C · 16-week program',before:'🧍‍♀️',after:'💪',metrics:[['−22 kg','WEIGHT'],['−14%','BODY FAT'],['−18 yrs','BODY AGE'],['−8','VISCERAL FAT']]},
-            ].map((c,i) => (
+            {t.results.clients.map((c,i) => (
               <div className={`proof-card reveal reveal-d${i+1}`} key={i}>
                 <div className="proof-photos">
-                  <div className="proof-photo" style={{borderRight:'1px solid var(--border)'}}><div className="proof-photo-label">BEFORE</div><div className="proof-photo-emoji">{c.before}</div></div>
-                  <div className="proof-photo"><div className="proof-photo-label">AFTER</div><div className="proof-photo-emoji">{c.after}</div></div>
+                  <div className="proof-photo" style={{borderRight:'1px solid var(--border)'}}><div className="proof-photo-label">BEFORE</div><div className="proof-photo-emoji">{['🧍‍♀️','🧍','🧍‍♀️'][i]}</div></div>
+                  <div className="proof-photo"><div className="proof-photo-label">AFTER</div><div className="proof-photo-emoji">{['🏃‍♀️','🏋️','💪'][i]}</div></div>
                 </div>
                 <div className="proof-body">
                   <div className="proof-name">{c.name}</div>
@@ -595,7 +592,7 @@ export default function CoachProofLanding() {
               </div>
             ))}
           </div>
-          <p style={{textAlign:'center',marginTop:24,fontSize:13,color:'var(--text3)'}}>Replace these with your real client results — legacy import makes it instant.</p>
+          <p style={{textAlign:'center',marginTop:24,fontSize:13,color:'var(--text3)'}}>{t.results.note}</p>
         </div>
       </section>
 
@@ -604,8 +601,8 @@ export default function CoachProofLanding() {
         <div className="quote-inner reveal">
           <div className="quote-avatar">👤</div>
           <div>
-            <div className="quote-text">{"\u201C"}Before CoachProof, I was scrolling through LINE chats to find client photos during meetings. Now I open the app and the numbers speak for themselves. It closes for me.{"\u201D"}</div>
-            <div className="quote-attr"><strong>Beta Coach</strong> · Weight Management Program, Bangkok</div>
+            <div className="quote-text">{"\u201C"}{t.quote.text}{"\u201D"}</div>
+            <div className="quote-attr"><strong>{t.quote.attr}</strong> · {t.quote.attrSub}</div>
           </div>
         </div>
       </div>
@@ -613,15 +610,10 @@ export default function CoachProofLanding() {
       {/* HOW IT WORKS */}
       <section className="cp-section" id="how">
         <div className="section-inner">
-          <div className="section-tag reveal">How it works</div>
-          <h2 className="section-title reveal">Simple for you.<br/>Impressive for prospects.</h2>
+          <div className="section-tag reveal">{t.howItWorks.tag}</div>
+          <h2 className="section-title reveal">{t.howItWorks.title1}<br/>{t.howItWorks.title2}</h2>
           <div className="steps-grid">
-            {[
-              {num:'01',icon:'➕',title:'Add a client',desc:'Create a profile in seconds. Add starting body comp measurements and first set of 4-angle photos.'},
-              {num:'02',icon:'📏',title:'Track every session',desc:'Log body composition after each scan. Add photos. CoachProof handles the math, deltas, and charts.'},
-              {num:'03',icon:'⭐',title:'Feature your best',desc:'Pin top transformations as CoachProofs. A polished showcase ready for any sales conversation.'},
-              {num:'04',icon:'🤝',title:'Close the deal',desc:'Pull up your CoachProofs mid-meeting. Real numbers, real photos. Let the data do the selling.'},
-            ].map((s,i) => (
+            {t.howItWorks.steps.map((s,i) => (
               <div className={`step reveal reveal-d${i+1}`} key={i}>
                 <div className="step-num">{s.num}</div>
                 <div className="step-icon">{s.icon}</div>
@@ -636,42 +628,31 @@ export default function CoachProofLanding() {
       {/* PRICING */}
       <section className="cp-section pricing-section" id="pricing">
         <div className="section-inner">
-          <div className="section-tag reveal">Pricing</div>
-          <h2 className="section-title reveal">One tool. Pays for itself<br/>with one new client.</h2>
-          <p className="reveal" style={{display:'inline-flex',alignItems:'center',gap:8,fontSize:12,color:'var(--green)',background:'var(--green-soft)',border:'1px solid rgba(0,200,83,0.18)',padding:'6px 14px',borderRadius:100,marginTop:12}}>✓ Early access pricing — locked in for life</p>
+          <div className="section-tag reveal">{t.pricing.tag}</div>
+          <h2 className="section-title reveal">{t.pricing.title1}<br/>{t.pricing.title2}</h2>
+          <p className="reveal" style={{display:'inline-flex',alignItems:'center',gap:8,fontSize:12,color:'var(--green)',background:'var(--green-soft)',border:'1px solid rgba(0,200,83,0.18)',padding:'6px 14px',borderRadius:100,marginTop:12}}>{t.pricing.earlyBadge}</p>
           <div className="pricing-grid">
             <div className="price-card reveal reveal-d1">
-              <div className="price-tier">Free</div>
-              <div className="price-amount">฿0</div>
-              <div className="price-period">During beta</div>
+              <div className="price-tier">{t.pricing.free.tier}</div>
+              <div className="price-amount">{t.pricing.free.amount}</div>
+              <div className="price-period">{t.pricing.free.period}</div>
               <ul className="price-features">
-                <li>Up to 10 new clients</li>
-                <li>5 legacy client imports</li>
-                <li>Full CoachProofs showcase (beta only)</li>
-                <li>Body composition tracking</li>
-                <li>Before/after photos</li>
-                <li>Progress charts</li>
-                <li>English + Thai</li>
+                {t.pricing.free.features.map((f,i) => <li key={i}>{f}</li>)}
               </ul>
-              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-outline" target="_blank" rel="noopener noreferrer">Join Beta Free</a>
+              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-outline" target="_blank" rel="noopener noreferrer">{t.pricing.free.cta}</a>
             </div>
             <div className="price-card featured reveal reveal-d2">
-              <div className="price-badge">Best Value</div>
-              <div className="price-tier" style={{color:'var(--green2)'}}>Pro Coach</div>
-              <div className="price-amount">฿150</div>
-              <div className="price-period">per month · cancel anytime</div>
+              <div className="price-badge">{t.pricing.pro.badge}</div>
+              <div className="price-tier" style={{color:'var(--green2)'}}>{t.pricing.pro.tier}</div>
+              <div className="price-amount">{t.pricing.pro.amount}</div>
+              <div className="price-period">{t.pricing.pro.period}</div>
               <ul className="price-features">
-                <li>Unlimited clients</li>
-                <li>Unlimited legacy imports</li>
-                <li>Full CoachProofs showcase</li>
-                <li>Automated check-in reminders</li>
-                <li>Priority support via LINE</li>
-                <li>English + Thai</li>
+                {t.pricing.pro.features.map((f,i) => <li key={i}>{f}</li>)}
               </ul>
-              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-solid" target="_blank" rel="noopener noreferrer">Get Early Access</a>
+              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-solid" target="_blank" rel="noopener noreferrer">{t.pricing.pro.cta}</a>
             </div>
           </div>
-          <div className="price-note">No credit card required · Free during beta · Cancel anytime</div>
+          <div className="price-note">{t.pricing.note}</div>
         </div>
       </section>
 
@@ -679,14 +660,14 @@ export default function CoachProofLanding() {
       <section className="cta-section" id="cta">
         <div className="cta-glow"/>
         <div className="cta-inner">
-          <div className="section-tag reveal" style={{justifyContent:'center',marginBottom:16}}>Early Access</div>
-          <h2 className="cta-title reveal">Your results deserve<br/><span className="green">better than a LINE chat.</span></h2>
-          <p className="cta-sub reveal">CoachProof is launching on iOS. Join the beta now — early access members get Pro pricing locked in for life.</p>
+          <div className="section-tag reveal" style={{justifyContent:'center',marginBottom:16}}>{t.cta.tag}</div>
+          <h2 className="cta-title reveal">{t.cta.title1}<br/><span className="green">{t.cta.title2}</span></h2>
+          <p className="cta-sub reveal">{t.cta.sub}</p>
           <div className="cta-buttons reveal">
-            <a href="https://testflight.apple.com/join/BaS3HwKx" className="line-btn" target="_blank" rel="noopener noreferrer">📲 Download on TestFlight</a>
-            <a href="mailto:hello@coachproof.app" className="email-btn">✉️ Email us</a>
+            <a href="https://testflight.apple.com/join/BaS3HwKx" className="line-btn" target="_blank" rel="noopener noreferrer">{t.cta.download}</a>
+            <a href="mailto:hello@coachproof.app" className="email-btn">{t.cta.email}</a>
           </div>
-          <p className="cta-small reveal">ไม่ต้องใช้บัตรเครดิต · ฟรีช่วง Beta · ยกเลิกได้ตลอด</p>
+          <p className="cta-small reveal">{t.cta.small}</p>
         </div>
       </section>
 
@@ -694,12 +675,12 @@ export default function CoachProofLanding() {
       <footer className="cp-footer">
         <div className="footer-logo">Coach<span>Proof</span></div>
         <div className="footer-links">
-          <a href="#features" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>Features</a>
-          <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>Results</a>
-          <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo('pricing'); }}>Pricing</a>
-          <a href="mailto:hello@coachproof.app">Contact</a>
+          <a href="#features" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>{t.footer.features}</a>
+          <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>{t.footer.results}</a>
+          <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo('pricing'); }}>{t.footer.pricing}</a>
+          <a href="mailto:hello@coachproof.app">{t.footer.contact}</a>
         </div>
-        <div className="footer-copy">© 2026 CoachProof · Built in Bangkok 🇹🇭</div>
+        <div className="footer-copy">{t.footer.copy}</div>
       </footer>
     </div>
   );

@@ -49,8 +49,8 @@ body {
 }
 .nav-logo { font-family:'Outfit',sans-serif; font-weight:800; font-size:19px; color:var(--text); letter-spacing:-0.5px; display:flex; align-items:center; gap:10px; }
 .nav-logo span { color:var(--green); }
-.nav-icon { width:30px; height:30px; background:linear-gradient(135deg,var(--green),var(--green2)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 2px 12px rgba(0,200,83,0.3); }
-.nav-links { display:flex; align-items:center; gap:28px; }
+.nav-icon-img { width:30px; height:30px; border-radius:8px; object-fit:cover; }
+.nav-links { display:flex; align-items:center; gap:28px; margin-left:32px; }
 .nav-links a { color:var(--text3); font-size:13px; font-weight:500; text-decoration:none; transition:color 0.2s; letter-spacing:0.01em; }
 .nav-links a:hover { color:var(--text); }
 .nav-cta { background:var(--green)!important; color:#000!important; padding:8px 20px!important; border-radius:8px!important; font-weight:700!important; font-size:13px!important; transition:all 0.2s!important; box-shadow:0 2px 12px rgba(0,200,83,0.25); }
@@ -434,7 +434,7 @@ export default function CoachProofLanding() {
 
       {/* NAV */}
       <nav className="cp-nav">
-        <div className="nav-logo"><div className="nav-icon">📊</div>Coach<span>Proof</span></div>
+        <div className="nav-logo"><img src="/favicon.png" alt="CoachProof" className="nav-icon-img"/><span>Coach<span>Proof</span></span></div>
         <div className={`nav-links${menuOpen ? ' open' : ''}`}>
           <a href="#features" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>{t.nav.features}</a>
           <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>{t.nav.results}</a>

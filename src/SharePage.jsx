@@ -66,14 +66,32 @@ export default function SharePage({ token }) {
         .maybeSingle();
 
       if (linkRow?.client_id) {
+        // Latest check-in for metrics
         const { data: ci } = await supabase
           .from('check_ins')
           .select('*')
           .eq('client_id', linkRow.client_id)
-          .order('checked_in_at', { ascending: false })
+          .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle();
-        if (ci) setCheckin(ci);
+
+        if (ci) {
+          // If latest check-in has no photo, find the most recent one that does
+          if (!ci.photo_front_url) {
+            const { data: ciWithPhoto } = await supabase
+              .from('check_ins')
+              .select('photo_front_url')
+              .eq('client_id', linkRow.client_id)
+              .not('photo_front_url', 'is', null)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            if (ciWithPhoto?.photo_front_url) {
+              ci.photo_front_url = ciWithPhoto.photo_front_url;
+            }
+          }
+          setCheckin(ci);
+        }
       }
     } catch (err) {
       console.warn('[share]', err.message);
@@ -150,9 +168,14 @@ export default function SharePage({ token }) {
 
         {/* Program header */}
         <div style={styles.header}>
-          <div>
-            <div style={styles.programName}>{programName}</div>
-            <div style={styles.coachName}>Coach {coachName}</div>
+          <div style={styles.headerLeft}>
+            {data.program_logo && data.program_logo !== '__coachproof_icon__' && (
+              <img src={data.program_logo} alt="" style={styles.programLogo} />
+            )}
+            <div>
+              <div style={styles.programName}>{programName}</div>
+              <div style={styles.coachName}>Coach {coachName}</div>
+            </div>
           </div>
           {weeks && <div style={styles.duration}>{weeks}-week program</div>}
         </div>
@@ -294,6 +317,13 @@ const styles = {
   header: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     padding: '14px 18px 12px',
+  },
+  headerLeft: {
+    display: 'flex', alignItems: 'center', gap: 10,
+  },
+  programLogo: {
+    width: 36, height: 36, borderRadius: 8, objectFit: 'contain',
+    background: '#0B1121',
   },
   programName: {
     color: '#F1F5F9', fontSize: 16, fontWeight: 700,

@@ -27,6 +27,14 @@ function programWeeks(startDate, endDate) {
   return Math.max(1, Math.round(days / 7));
 }
 
+function PhotoWithFallback({ src, alt, style }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) {
+    return <div style={styles.photoPlaceholder}>📷</div>;
+  }
+  return <img src={src} alt={alt} style={style} onError={() => setFailed(true)} />;
+}
+
 export default function SharePage({ token }) {
   const [data, setData] = useState(null);
   const [checkin, setCheckin] = useState(null);
@@ -40,7 +48,6 @@ export default function SharePage({ token }) {
 
   async function fetchData() {
     try {
-      // Fetch shared client data via the public view
       const { data: row, error: viewErr } = await supabase
         .from('public_shared_client')
         .select('*')
@@ -51,11 +58,6 @@ export default function SharePage({ token }) {
       if (!row) { setError('expired'); setLoading(false); return; }
       setData(row);
 
-      // Fetch latest check-in for "after" data.
-      // NOTE: check_ins RLS may block anonymous reads. If so, run this SQL:
-      //   CREATE POLICY "public can read check_ins for shared clients"
-      //     ON check_ins FOR SELECT TO public
-      //     USING (client_id IN (SELECT client_id FROM shared_links WHERE is_active = true));
       const { data: linkRow } = await supabase
         .from('shared_links')
         .select('client_id')
@@ -95,7 +97,11 @@ export default function SharePage({ token }) {
     return (
       <div style={styles.page}>
         <div style={styles.errorCard}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🔗</div>
+          <div style={styles.brandRow}>
+            <img src="/favicon.png" alt="CoachProof" style={styles.brandIcon} />
+            <span style={styles.brandName}>Coach<span style={{ color: '#10B981' }}>Proof</span></span>
+          </div>
+          <div style={{ fontSize: 48, marginBottom: 16, marginTop: 24 }}>🔗</div>
           <h2 style={styles.errorTitle}>
             {error === 'expired' ? 'This link is no longer active' : 'Something went wrong'}
           </h2>
@@ -121,7 +127,6 @@ export default function SharePage({ token }) {
   const fat = deltaText(data.initial_fat, checkin?.fat_percent, '%');
   const bodyAge = deltaText(data.initial_body_age, checkin?.body_age, '');
   const visceral = deltaText(data.initial_visceral, checkin?.visceral_fat, '');
-  const bmi = deltaText(data.initial_bmi, checkin?.bmi, '');
 
   const metrics = [
     { label: 'Weight', ...weight },
@@ -134,7 +139,16 @@ export default function SharePage({ token }) {
     <div style={styles.page}>
       <div style={styles.card}>
 
-        {/* Header */}
+        {/* Brand header */}
+        <div style={styles.topBar}>
+          <div style={styles.brandRow}>
+            <img src="/favicon.png" alt="CoachProof" style={styles.brandIcon} />
+            <span style={styles.brandName}>Coach<span style={{ color: '#10B981' }}>Proof</span></span>
+          </div>
+          <div style={styles.verifiedBadge}>Verified Results</div>
+        </div>
+
+        {/* Program header */}
         <div style={styles.header}>
           <div>
             <div style={styles.programName}>{programName}</div>
@@ -147,22 +161,14 @@ export default function SharePage({ token }) {
         <div style={styles.photoRow}>
           <div style={styles.photoCol}>
             <div style={styles.photoLabel}>BEFORE</div>
-            {beforePhoto ? (
-              <img src={beforePhoto} alt="Before" style={styles.photo} />
-            ) : (
-              <div style={styles.photoPlaceholder}>📷</div>
-            )}
+            <PhotoWithFallback src={beforePhoto} alt="Before" style={styles.photo} />
             {data.initial_weight != null && (
               <div style={styles.weightLabel}>{data.initial_weight} KG</div>
             )}
           </div>
           <div style={styles.photoCol}>
             <div style={{ ...styles.photoLabel, ...styles.photoLabelAfter }}>AFTER</div>
-            {afterPhoto ? (
-              <img src={afterPhoto} alt="After" style={styles.photo} />
-            ) : (
-              <div style={styles.photoPlaceholder}>📷</div>
-            )}
+            <PhotoWithFallback src={afterPhoto} alt="After" style={styles.photo} />
             {checkin?.weight_kg != null && (
               <div style={{ ...styles.weightLabel, color: '#10B981' }}>
                 {checkin.weight_kg} KG
@@ -204,6 +210,12 @@ export default function SharePage({ token }) {
           >
             Download CoachProof →
           </a>
+        </div>
+
+        {/* Footer branding */}
+        <div style={styles.footer}>
+          <span style={styles.footerText}>Tracked & verified with</span>
+          <span style={styles.footerBrand}>CoachProof</span>
         </div>
       </div>
     </div>
@@ -250,13 +262,38 @@ const styles = {
     width: '100%', maxWidth: 420,
     background: '#111827', borderRadius: 20,
     overflow: 'hidden',
-    boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+    boxShadow: '0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.1)',
+  },
+
+  // Top bar branding
+  topBar: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    padding: '14px 18px',
+    borderBottom: '1px solid rgba(16,185,129,0.1)',
+    background: 'linear-gradient(180deg, rgba(16,185,129,0.04) 0%, transparent 100%)',
+  },
+  brandRow: {
+    display: 'flex', alignItems: 'center', gap: 8,
+  },
+  brandIcon: {
+    width: 24, height: 24, borderRadius: 6,
+  },
+  brandName: {
+    fontFamily: "'Outfit', sans-serif",
+    fontWeight: 800, fontSize: 15, color: '#F1F5F9', letterSpacing: -0.3,
+  },
+  verifiedBadge: {
+    fontSize: 10, fontWeight: 600, letterSpacing: 0.5,
+    color: '#10B981', background: 'rgba(16,185,129,0.1)',
+    border: '1px solid rgba(16,185,129,0.2)',
+    padding: '3px 10px', borderRadius: 100,
+    textTransform: 'uppercase',
   },
 
   // Header
   header: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '16px 18px 12px',
+    padding: '14px 18px 12px',
   },
   programName: {
     color: '#F1F5F9', fontSize: 16, fontWeight: 700,
@@ -330,7 +367,7 @@ const styles = {
 
   // CTA
   cta: {
-    textAlign: 'center', padding: '16px 18px 20px',
+    textAlign: 'center', padding: '16px 18px 16px',
     borderTop: '1px solid #1C2A42',
   },
   ctaText: {
@@ -342,5 +379,17 @@ const styles = {
     fontSize: 14, fontWeight: 700,
     padding: '12px 28px', borderRadius: 12,
     textDecoration: 'none',
+  },
+
+  // Footer branding
+  footer: {
+    textAlign: 'center', padding: '10px 18px 14px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+  },
+  footerText: {
+    color: '#475569', fontSize: 11, fontWeight: 500,
+  },
+  footerBrand: {
+    color: '#10B981', fontSize: 11, fontWeight: 700,
   },
 };

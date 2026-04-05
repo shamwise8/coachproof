@@ -14,6 +14,7 @@ const SHARE_CSS = `
 
 .share-page {
   min-height: 100vh;
+  width: 100vw;
   background: #060B16;
   display: flex;
   align-items: center;
@@ -22,6 +23,12 @@ const SHARE_CSS = `
   font-family: 'Instrument Sans', system-ui, sans-serif;
   position: relative;
   overflow: hidden;
+}
+@media (min-width: 820px) {
+  .share-page { padding: 24px 48px; }
+}
+@media (min-width: 1600px) {
+  .share-page { padding: 32px 80px; }
 }
 .share-bg {
   position: absolute; inset: 0; pointer-events: none;
@@ -42,6 +49,7 @@ const SHARE_CSS = `
   gap: 60px;
   max-width: 900px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .share-card {
@@ -106,18 +114,18 @@ const SHARE_CSS = `
 
 @media (min-width: 820px) {
   .share-side { display: flex; }
-  .share-layout { justify-content: center; gap: 80px; max-width: 1100px; }
-  .share-card { max-width: 520px; }
-  .share-side { max-width: 420px; }
+  .share-layout { justify-content: center; gap: 60px; max-width: 960px; }
+  .share-card { max-width: 480px; }
+  .share-side { max-width: 380px; }
   .share-side-tagline { font-size: 34px; }
   .share-side-desc { font-size: 16px; }
   .share-side-feature { font-size: 15px; }
   .share-side-cta { padding: 16px 32px; font-size: 15px; }
 }
 @media (min-width: 1200px) {
-  .share-layout { gap: 100px; max-width: 1280px; }
-  .share-card { max-width: 580px; }
-  .share-side { max-width: 460px; }
+  .share-layout { gap: 80px; max-width: 1140px; }
+  .share-card { max-width: 560px; }
+  .share-side { max-width: 440px; }
   .share-side-logo img { width: 52px; height: 52px; border-radius: 14px; }
   .share-side-logo span { font-size: 30px; }
   .share-side-tagline { font-size: 40px; }
@@ -126,6 +134,29 @@ const SHARE_CSS = `
   .share-side-feature { font-size: 16px; }
   .share-side-feature-icon { width: 42px; height: 42px; font-size: 18px; }
   .share-side-cta { padding: 18px 36px; font-size: 16px; border-radius: 12px; }
+}
+@media (min-width: 1600px) {
+  .share-layout { gap: 120px; max-width: 1480px; }
+  .share-card { width: 680px; max-width: 680px; }
+  .share-side { width: 560px; max-width: 560px; }
+  .share-side-logo img { width: 56px; height: 56px; }
+  .share-side-logo span { font-size: 34px; }
+  .share-side-tagline { font-size: 48px; margin-bottom: 20px; }
+  .share-side-desc { font-size: 18px; line-height: 1.8; margin-bottom: 40px; }
+  .share-side-features { gap: 20px; margin-bottom: 44px; }
+  .share-side-feature { font-size: 17px; gap: 16px; }
+  .share-side-feature-icon { width: 48px; height: 48px; font-size: 20px; border-radius: 12px; }
+  .share-side-cta { padding: 20px 40px; font-size: 17px; border-radius: 14px; }
+}
+@media (min-width: 2200px) {
+  .share-layout { gap: 160px; max-width: 1900px; }
+  .share-card { width: 780px; max-width: 780px; }
+  .share-side { width: 700px; max-width: 700px; }
+  .share-side-tagline { font-size: 54px; }
+  .share-side-desc { font-size: 20px; }
+  .share-side-feature { font-size: 19px; }
+  .share-side-feature-icon { width: 52px; height: 52px; font-size: 22px; }
+  .share-side-cta { padding: 22px 44px; font-size: 18px; }
 }
 
 /* Scale card internals on desktop */
@@ -146,6 +177,30 @@ const SHARE_CSS = `
   .share-card .share-metrics-grid { padding: 0 18px 18px; gap: 8px; }
   .share-card .share-cta { padding: 20px 22px; }
   .share-card .share-cta-btn { padding: 14px 32px; font-size: 15px; }
+}
+@media (min-width: 1600px) {
+  .share-card .share-photo-col img,
+  .share-card .share-photo-col .share-photo-placeholder { height: 480px; }
+  .share-card .share-metric-value { font-size: 24px; }
+  .share-card .share-top-bar { padding: 18px 26px; }
+  .share-card .share-header { padding: 18px 26px 16px; }
+  .share-card .share-program-name { font-size: 20px; }
+  .share-card .share-info-row { padding: 14px 26px; }
+  .share-card .share-metrics-grid { padding: 0 22px 22px; gap: 10px; }
+  .share-card .share-cta { padding: 24px 26px; }
+  .share-card .share-cta-btn { padding: 16px 36px; font-size: 16px; }
+}
+@media (min-width: 2200px) {
+  .share-card .share-photo-col img,
+  .share-card .share-photo-col .share-photo-placeholder { height: 540px; }
+  .share-card .share-metric-value { font-size: 26px; }
+  .share-card .share-top-bar { padding: 20px 28px; }
+  .share-card .share-header { padding: 20px 28px 18px; }
+  .share-card .share-program-name { font-size: 22px; }
+  .share-card .share-info-row { padding: 16px 28px; font-size: 15px; }
+  .share-card .share-metrics-grid { padding: 0 24px 24px; gap: 12px; }
+  .share-card .share-cta { padding: 28px 28px; }
+  .share-card .share-cta-btn { padding: 18px 40px; font-size: 17px; border-radius: 14px; }
 }
 `;
 

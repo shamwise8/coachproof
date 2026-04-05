@@ -9,6 +9,107 @@ const supabase = createClient(
 // TODO: When client-photos bucket goes private, use a Vercel API route
 // or Supabase Edge Function to generate signed URLs on demand.
 
+const SHARE_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap');
+
+.share-page {
+  min-height: 100vh;
+  background: #060B16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+.share-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 50% 60% at 50% 40%, rgba(0,200,83,0.05) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 80% 70%, rgba(16,185,129,0.03) 0%, transparent 60%);
+}
+.share-grid-bg {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.02;
+  background-image: linear-gradient(#243044 1px, transparent 1px), linear-gradient(90deg, #243044 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.share-layout {
+  position: relative; z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  max-width: 900px;
+  width: 100%;
+}
+
+.share-card {
+  width: 100%; max-width: 420px;
+  background: #111827; border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.1);
+  flex-shrink: 0;
+}
+
+.share-side {
+  display: none;
+  flex-direction: column;
+  max-width: 360px;
+}
+.share-side-logo {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+}
+.share-side-logo img {
+  width: 44px; height: 44px; border-radius: 12px;
+}
+.share-side-logo span {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 26px; color: #F1F5F9; letter-spacing: -0.5px;
+}
+.share-side-logo .green { color: #00C853; }
+.share-side-tagline {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px; font-weight: 800; line-height: 1.2;
+  letter-spacing: -0.5px; color: #F1F5F9; margin-bottom: 16px;
+}
+.share-side-tagline .green { color: #00C853; }
+.share-side-desc {
+  color: #94A3B8; font-size: 15px; line-height: 1.7; margin-bottom: 32px;
+}
+.share-side-features {
+  display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px;
+}
+.share-side-feature {
+  display: flex; align-items: center; gap: 12px; font-size: 14px; color: #CBD5E1;
+}
+.share-side-feature-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(0,200,83,0.08); border: 1px solid rgba(0,200,83,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.share-side-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #00C853; color: #000;
+  padding: 14px 28px; border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s;
+  box-shadow: 0 4px 16px rgba(0,200,83,0.2);
+  align-self: flex-start;
+}
+.share-side-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(0,200,83,0.35);
+}
+
+@media (min-width: 820px) {
+  .share-side { display: flex; }
+  .share-layout { justify-content: space-between; }
+}
+`;
+
 function deltaText(before, after, unit) {
   if (before == null || after == null) return null;
   const d = after - before;
@@ -66,7 +167,6 @@ export default function SharePage({ token }) {
         .maybeSingle();
 
       if (linkRow?.client_id) {
-        // Latest check-in for metrics
         const { data: ci } = await supabase
           .from('check_ins')
           .select('*')
@@ -76,7 +176,6 @@ export default function SharePage({ token }) {
           .maybeSingle();
 
         if (ci) {
-          // If latest check-in has no photo, find the most recent one that does
           if (!ci.photo_front_url) {
             const { data: ciWithPhoto } = await supabase
               .from('check_ins')
@@ -103,7 +202,8 @@ export default function SharePage({ token }) {
 
   if (loading) {
     return (
-      <div style={styles.page}>
+      <div className="share-page">
+        <style>{SHARE_CSS}</style>
         <div style={styles.loader}>
           <div style={styles.spinner} />
         </div>
@@ -113,8 +213,11 @@ export default function SharePage({ token }) {
 
   if (error) {
     return (
-      <div style={styles.page}>
-        <div style={styles.errorCard}>
+      <div className="share-page">
+        <style>{SHARE_CSS}</style>
+        <div className="share-bg" />
+        <div className="share-grid-bg" />
+        <div style={{ ...styles.errorCard, position: 'relative', zIndex: 1 }}>
           <div style={styles.brandRow}>
             <img src="/favicon.png" alt="CoachProof" style={styles.brandIcon} />
             <span style={styles.brandName}>Coach<span style={{ color: '#10B981' }}>Proof</span></span>
@@ -154,80 +257,46 @@ export default function SharePage({ token }) {
   ].filter(m => m.text);
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
+    <div className="share-page">
+      <style>{SHARE_CSS}</style>
+      <div className="share-bg" />
+      <div className="share-grid-bg" />
 
-        {/* Brand header */}
-        <div style={styles.topBar}>
-          <div style={styles.brandRow}>
-            <img src="/favicon.png" alt="CoachProof" style={styles.brandIcon} />
-            <span style={styles.brandName}>Coach<span style={{ color: '#10B981' }}>Proof</span></span>
+      <div className="share-layout">
+
+        {/* Desktop side panel */}
+        <div className="share-side">
+          <div className="share-side-logo">
+            <img src="/favicon.png" alt="CoachProof" />
+            <span>Coach<span className="green">Proof</span></span>
           </div>
-          <div style={styles.verifiedBadge}>Verified Results</div>
-        </div>
-
-        {/* Program header */}
-        <div style={styles.header}>
-          <div style={styles.headerLeft}>
-            {data.program_logo && data.program_logo !== '__coachproof_icon__' && (
-              <img src={data.program_logo} alt="" style={styles.programLogo} />
-            )}
-            <div>
-              <div style={styles.programName}>{programName}</div>
-              <div style={styles.coachName}>Coach {coachName}</div>
+          <div className="share-side-tagline">
+            Real results.<br/><span className="green">Tracked & verified.</span>
+          </div>
+          <p className="share-side-desc">
+            CoachProof is the CRM built for weight management coaches. Track body composition, capture before & after photos, and turn your best results into a closing tool.
+          </p>
+          <div className="share-side-features">
+            <div className="share-side-feature">
+              <div className="share-side-feature-icon">📊</div>
+              <span>Body composition tracking</span>
+            </div>
+            <div className="share-side-feature">
+              <div className="share-side-feature-icon">📸</div>
+              <span>Before & after photos</span>
+            </div>
+            <div className="share-side-feature">
+              <div className="share-side-feature-icon">🏆</div>
+              <span>CoachProofs showcase</span>
+            </div>
+            <div className="share-side-feature">
+              <div className="share-side-feature-icon">🔔</div>
+              <span>Smart check-in reminders</span>
             </div>
           </div>
-          {weeks && <div style={styles.duration}>{weeks}-week program</div>}
-        </div>
-
-        {/* Photos */}
-        <div style={styles.photoRow}>
-          <div style={styles.photoCol}>
-            <div style={styles.photoLabel}>BEFORE</div>
-            <PhotoWithFallback src={beforePhoto} alt="Before" style={styles.photo} />
-            {data.initial_weight != null && (
-              <div style={styles.weightLabel}>{data.initial_weight} KG</div>
-            )}
-          </div>
-          <div style={styles.photoCol}>
-            <div style={{ ...styles.photoLabel, ...styles.photoLabelAfter }}>AFTER</div>
-            <PhotoWithFallback src={afterPhoto} alt="After" style={styles.photo} />
-            {checkin?.weight_kg != null && (
-              <div style={{ ...styles.weightLabel, color: '#10B981' }}>
-                {checkin.weight_kg} KG
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Info row */}
-        <div style={styles.infoRow}>
-          <span style={styles.infoText}>
-            {data.age != null ? `${data.age} yrs` : ''}
-          </span>
-          {weight?.text && (
-            <span style={styles.infoDelta}>{weight.text} in {weeks} weeks</span>
-          )}
-        </div>
-
-        {/* Metrics */}
-        {metrics.length > 0 && (
-          <div style={styles.metricsGrid}>
-            {metrics.map(m => (
-              <div key={m.label} style={styles.metricCell}>
-                <div style={styles.metricValue}>{m.text}</div>
-                <div style={styles.metricLabel}>{m.label}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* CTA */}
-        <div style={styles.cta}>
-          <div style={styles.ctaText}>Want results like this?</div>
           <a
             href="https://testflight.apple.com/join/BaS3HwKx"
-            style={styles.ctaButton}
+            className="share-side-cta"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -235,30 +304,104 @@ export default function SharePage({ token }) {
           </a>
         </div>
 
-        {/* Footer branding */}
-        <div style={styles.footer}>
-          <span style={styles.footerText}>Tracked & verified with</span>
-          <span style={styles.footerBrand}>CoachProof</span>
+        {/* Card */}
+        <div className="share-card">
+
+          {/* Brand header */}
+          <div style={styles.topBar}>
+            <div style={styles.brandRow}>
+              <img src="/favicon.png" alt="CoachProof" style={styles.brandIcon} />
+              <span style={styles.brandName}>Coach<span style={{ color: '#10B981' }}>Proof</span></span>
+            </div>
+            <div style={styles.verifiedBadge}>Verified Results</div>
+          </div>
+
+          {/* Program header */}
+          <div style={styles.header}>
+            <div style={styles.headerLeft}>
+              {data.program_logo && data.program_logo !== '__coachproof_icon__' && (
+                <img src={data.program_logo} alt="" style={styles.programLogo} />
+              )}
+              <div>
+                <div style={styles.programName}>{programName}</div>
+                <div style={styles.coachName}>Coach {coachName}</div>
+              </div>
+            </div>
+            {weeks && <div style={styles.duration}>{weeks}-week program</div>}
+          </div>
+
+          {/* Photos */}
+          <div style={styles.photoRow}>
+            <div style={styles.photoCol}>
+              <div style={styles.photoLabel}>BEFORE</div>
+              <PhotoWithFallback src={beforePhoto} alt="Before" style={styles.photo} />
+              {data.initial_weight != null && (
+                <div style={styles.weightLabel}>{data.initial_weight} KG</div>
+              )}
+            </div>
+            <div style={styles.photoCol}>
+              <div style={{ ...styles.photoLabel, ...styles.photoLabelAfter }}>AFTER</div>
+              <PhotoWithFallback src={afterPhoto} alt="After" style={styles.photo} />
+              {checkin?.weight_kg != null && (
+                <div style={{ ...styles.weightLabel, color: '#10B981' }}>
+                  {checkin.weight_kg} KG
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Info row */}
+          <div style={styles.infoRow}>
+            <span style={styles.infoText}>
+              {data.age != null ? `${data.age} yrs` : ''}
+            </span>
+            {weight?.text && (
+              <span style={styles.infoDelta}>{weight.text} in {weeks} weeks</span>
+            )}
+          </div>
+
+          {/* Metrics */}
+          {metrics.length > 0 && (
+            <div style={styles.metricsGrid}>
+              {metrics.map(m => (
+                <div key={m.label} style={styles.metricCell}>
+                  <div style={styles.metricValue}>{m.text}</div>
+                  <div style={styles.metricLabel}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* CTA */}
+          <div style={styles.cta}>
+            <div style={styles.ctaText}>Want results like this?</div>
+            <a
+              href="https://testflight.apple.com/join/BaS3HwKx"
+              style={styles.ctaButton}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download CoachProof →
+            </a>
+          </div>
+
+          {/* Footer branding */}
+          <div style={styles.footer}>
+            <span style={styles.footerText}>Tracked & verified with</span>
+            <span style={styles.footerBrand}>CoachProof</span>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+// ─── Inline Styles (card internals) ──────────────────────────────────────────
 
 const styles = {
-  page: {
-    minHeight: '100vh',
-    background: '#060B16',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '16px',
-    fontFamily: "'Instrument Sans', system-ui, sans-serif",
-  },
   loader: {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
+    position: 'relative', zIndex: 1,
   },
   spinner: {
     width: 32, height: 32, borderRadius: '50%',
@@ -278,14 +421,6 @@ const styles = {
   },
   errorLink: {
     color: '#10B981', fontSize: 14, fontWeight: 600, textDecoration: 'none',
-  },
-
-  // Card
-  card: {
-    width: '100%', maxWidth: 420,
-    background: '#111827', borderRadius: 20,
-    overflow: 'hidden',
-    boxShadow: '0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.1)',
   },
 
   // Top bar branding

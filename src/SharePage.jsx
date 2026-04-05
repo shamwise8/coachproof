@@ -106,7 +106,46 @@ const SHARE_CSS = `
 
 @media (min-width: 820px) {
   .share-side { display: flex; }
-  .share-layout { justify-content: space-between; }
+  .share-layout { justify-content: center; gap: 80px; max-width: 1100px; }
+  .share-card { max-width: 520px; }
+  .share-side { max-width: 420px; }
+  .share-side-tagline { font-size: 34px; }
+  .share-side-desc { font-size: 16px; }
+  .share-side-feature { font-size: 15px; }
+  .share-side-cta { padding: 16px 32px; font-size: 15px; }
+}
+@media (min-width: 1200px) {
+  .share-layout { gap: 100px; max-width: 1280px; }
+  .share-card { max-width: 580px; }
+  .share-side { max-width: 460px; }
+  .share-side-logo img { width: 52px; height: 52px; border-radius: 14px; }
+  .share-side-logo span { font-size: 30px; }
+  .share-side-tagline { font-size: 40px; }
+  .share-side-desc { font-size: 17px; }
+  .share-side-features { gap: 18px; }
+  .share-side-feature { font-size: 16px; }
+  .share-side-feature-icon { width: 42px; height: 42px; font-size: 18px; }
+  .share-side-cta { padding: 18px 36px; font-size: 16px; border-radius: 12px; }
+}
+
+/* Scale card internals on desktop */
+@media (min-width: 820px) {
+  .share-card .share-photo-row { gap: 3px; }
+  .share-card .share-photo-col img,
+  .share-card .share-photo-col .share-photo-placeholder { height: 380px; }
+  .share-card .share-metric-value { font-size: 20px; }
+  .share-card .share-program-name { font-size: 18px; }
+}
+@media (min-width: 1200px) {
+  .share-card .share-photo-col img,
+  .share-card .share-photo-col .share-photo-placeholder { height: 440px; }
+  .share-card .share-metric-value { font-size: 22px; }
+  .share-card .share-top-bar { padding: 16px 22px; }
+  .share-card .share-header { padding: 16px 22px 14px; }
+  .share-card .share-info-row { padding: 12px 22px; }
+  .share-card .share-metrics-grid { padding: 0 18px 18px; gap: 8px; }
+  .share-card .share-cta { padding: 20px 22px; }
+  .share-card .share-cta-btn { padding: 14px 32px; font-size: 15px; }
 }
 `;
 
@@ -131,7 +170,7 @@ function programWeeks(startDate, endDate) {
 function PhotoWithFallback({ src, alt, style }) {
   const [failed, setFailed] = useState(false);
   if (!src || failed) {
-    return <div style={styles.photoPlaceholder}>📷</div>;
+    return <div className="share-photo-placeholder" style={styles.photoPlaceholder}>📷</div>;
   }
   return <img src={src} alt={alt} style={style} onError={() => setFailed(true)} />;
 }
@@ -308,7 +347,7 @@ export default function SharePage({ token }) {
         <div className="share-card">
 
           {/* Brand header */}
-          <div style={styles.topBar}>
+          <div className="share-top-bar" style={styles.topBar}>
             <div style={styles.brandRow}>
               <img src="/favicon.png" alt="CoachProof" style={styles.brandIcon} />
               <span style={styles.brandName}>Coach<span style={{ color: '#10B981' }}>Proof</span></span>
@@ -317,13 +356,13 @@ export default function SharePage({ token }) {
           </div>
 
           {/* Program header */}
-          <div style={styles.header}>
+          <div className="share-header" style={styles.header}>
             <div style={styles.headerLeft}>
               {data.program_logo && data.program_logo !== '__coachproof_icon__' && (
                 <img src={data.program_logo} alt="" style={styles.programLogo} />
               )}
               <div>
-                <div style={styles.programName}>{programName}</div>
+                <div className="share-program-name" style={styles.programName}>{programName}</div>
                 <div style={styles.coachName}>Coach {coachName}</div>
               </div>
             </div>
@@ -331,15 +370,15 @@ export default function SharePage({ token }) {
           </div>
 
           {/* Photos */}
-          <div style={styles.photoRow}>
-            <div style={styles.photoCol}>
+          <div className="share-photo-row" style={styles.photoRow}>
+            <div className="share-photo-col" style={styles.photoCol}>
               <div style={styles.photoLabel}>BEFORE</div>
               <PhotoWithFallback src={beforePhoto} alt="Before" style={styles.photo} />
               {data.initial_weight != null && (
                 <div style={styles.weightLabel}>{data.initial_weight} KG</div>
               )}
             </div>
-            <div style={styles.photoCol}>
+            <div className="share-photo-col" style={styles.photoCol}>
               <div style={{ ...styles.photoLabel, ...styles.photoLabelAfter }}>AFTER</div>
               <PhotoWithFallback src={afterPhoto} alt="After" style={styles.photo} />
               {checkin?.weight_kg != null && (
@@ -351,7 +390,7 @@ export default function SharePage({ token }) {
           </div>
 
           {/* Info row */}
-          <div style={styles.infoRow}>
+          <div className="share-info-row" style={styles.infoRow}>
             <span style={styles.infoText}>
               {data.age != null ? `${data.age} yrs` : ''}
             </span>
@@ -362,10 +401,10 @@ export default function SharePage({ token }) {
 
           {/* Metrics */}
           {metrics.length > 0 && (
-            <div style={styles.metricsGrid}>
+            <div className="share-metrics-grid" style={styles.metricsGrid}>
               {metrics.map(m => (
                 <div key={m.label} style={styles.metricCell}>
-                  <div style={styles.metricValue}>{m.text}</div>
+                  <div className="share-metric-value" style={styles.metricValue}>{m.text}</div>
                   <div style={styles.metricLabel}>{m.label}</div>
                 </div>
               ))}
@@ -373,10 +412,11 @@ export default function SharePage({ token }) {
           )}
 
           {/* CTA */}
-          <div style={styles.cta}>
+          <div className="share-cta" style={styles.cta}>
             <div style={styles.ctaText}>Want results like this?</div>
             <a
               href="https://testflight.apple.com/join/BaS3HwKx"
+              className="share-cta-btn"
               style={styles.ctaButton}
               target="_blank"
               rel="noopener noreferrer"

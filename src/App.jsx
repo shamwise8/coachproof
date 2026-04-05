@@ -395,8 +395,113 @@ const PreviewReminders = () => (
   </>
 );
 
-const FEATURE_ICONS = ['📊','📸','🏆','📂','🔔'];
-const FEATURE_PREVIEWS = [PreviewBodyComp, PreviewPhotos, PreviewCoachProofs, PreviewLegacy, PreviewReminders];
+const PreviewShowTime = () => (
+  <>
+    <div style={{background:'#000',borderRadius:14,overflow:'hidden',marginBottom:10}}>
+      <div style={{padding:'12px 16px',display:'flex',justifyContent:'space-between',alignItems:'center',borderBottom:'1px solid #1C2A42'}}>
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <div style={{width:28,height:28,borderRadius:7,background:'linear-gradient(135deg,var(--green),var(--green2))',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12}}>📊</div>
+          <span style={{fontWeight:700,fontSize:13}}>F90 Program</span>
+        </div>
+        <span style={{fontSize:10,color:'var(--text3)',fontWeight:600}}>SLIDE 2 / 5</span>
+      </div>
+      <div style={{display:'flex',gap:2,height:140}}>
+        <div style={{flex:1,background:'#1a1a2e',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:4}}>
+          <div style={{fontSize:8,letterSpacing:'0.12em',color:'var(--text3)',fontWeight:600}}>BEFORE</div>
+          <div style={{fontSize:32}}>🧍</div>
+        </div>
+        <div style={{flex:1,background:'#1a1a2e',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:4}}>
+          <div style={{fontSize:8,letterSpacing:'0.12em',color:'var(--green)',fontWeight:600}}>AFTER</div>
+          <div style={{fontSize:32}}>🏃</div>
+        </div>
+      </div>
+      <div style={{padding:12,display:'grid',gridTemplateColumns:'1fr 1fr',gap:6}}>
+        <div style={{background:'#111',borderRadius:8,padding:8}}><div style={{color:'var(--green)',fontSize:16,fontWeight:800}}>−17 kg</div><div style={{fontSize:8,color:'var(--text3)',letterSpacing:'0.1em'}}>WEIGHT</div></div>
+        <div style={{background:'#111',borderRadius:8,padding:8}}><div style={{color:'var(--green)',fontSize:16,fontWeight:800}}>−13%</div><div style={{fontSize:8,color:'var(--text3)',letterSpacing:'0.1em'}}>BODY FAT</div></div>
+      </div>
+    </div>
+    <div style={{display:'flex',justifyContent:'center',gap:4}}>
+      {[1,2,3,4,5].map(i => <div key={i} style={{width:i===2?20:6,height:4,borderRadius:2,background:i===2?'var(--green)':'var(--border2)'}}/>)}
+    </div>
+    <div style={{fontSize:11,color:'var(--text3)',textAlign:'center',padding:'8px 0 0'}}>Swipeable full-screen · Hand the phone to the prospect</div>
+  </>
+);
+
+const PreviewHighlights = () => (
+  <>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+      <div style={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:12,padding:12,textAlign:'center'}}>
+        <div style={{fontSize:9,letterSpacing:'0.12em',color:'var(--text3)',fontWeight:700,marginBottom:8}}>SQUARE · 1:1</div>
+        <div style={{background:'#0a0f1a',borderRadius:8,padding:10,aspectRatio:'1',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:6}}>
+          <div style={{display:'flex',gap:4}}><span style={{fontSize:20}}>🧍</span><span style={{fontSize:20}}>🏃</span></div>
+          <div style={{fontSize:10,fontWeight:700,color:'var(--green)'}}>−17 kg</div>
+          <div style={{fontSize:7,color:'var(--text3)'}}>F90 Program</div>
+        </div>
+        <div style={{fontSize:10,color:'var(--text2)',marginTop:6}}>LINE · Facebook</div>
+      </div>
+      <div style={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:12,padding:12,textAlign:'center'}}>
+        <div style={{fontSize:9,letterSpacing:'0.12em',color:'var(--text3)',fontWeight:700,marginBottom:8}}>STORY · 9:16</div>
+        <div style={{background:'#0a0f1a',borderRadius:8,padding:8,aspectRatio:'9/14',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:4}}>
+          <div style={{display:'flex',gap:3}}><span style={{fontSize:16}}>🧍</span><span style={{fontSize:16}}>🏃</span></div>
+          <div style={{fontSize:9,fontWeight:700,color:'var(--green)'}}>−17 kg</div>
+          <div style={{fontSize:6,color:'var(--text3)'}}>12 weeks</div>
+        </div>
+        <div style={{fontSize:10,color:'var(--text2)',marginTop:6}}>IG · TikTok</div>
+      </div>
+    </div>
+    <div style={{fontSize:11,color:'var(--text3)',textAlign:'center',padding:'10px 0 0'}}>One tap to generate · Share anywhere</div>
+  </>
+);
+
+const PreviewShareLinks = () => (
+  <>
+    <div style={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:14,padding:16,marginBottom:10}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
+        <div style={{width:28,height:28,borderRadius:7,background:'rgba(0,200,83,0.1)',border:'1px solid rgba(0,200,83,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12}}>🔗</div>
+        <div>
+          <div style={{fontWeight:600,fontSize:12}}>Share Link Generated</div>
+          <div style={{fontSize:10,color:'var(--text3)'}}>Active · 24 views</div>
+        </div>
+      </div>
+      <div style={{background:'var(--bg)',border:'1px solid var(--border)',borderRadius:8,padding:'8px 12px',fontFamily:'monospace',fontSize:11,color:'var(--green)',letterSpacing:'0.02em'}}>
+        coachproof.vercel.app/s/a7x9k2m4
+      </div>
+      <div style={{display:'flex',gap:6,marginTop:10}}>
+        <div style={{flex:1,background:'var(--green)',color:'#000',borderRadius:8,padding:'8px 0',textAlign:'center',fontSize:11,fontWeight:700}}>Copy Link</div>
+        <div style={{flex:1,background:'#06C755',color:'#fff',borderRadius:8,padding:'8px 0',textAlign:'center',fontSize:11,fontWeight:700}}>Share via LINE</div>
+      </div>
+    </div>
+    <div style={{fontSize:11,color:'var(--text3)',textAlign:'center',padding:4}}>Prospect sees a professional transformation page</div>
+  </>
+);
+
+const PreviewMilestones = () => (
+  <>
+    <div style={{display:'flex',flexDirection:'column',gap:8}}>
+      <div style={{background:'linear-gradient(145deg,rgba(0,200,83,0.08),rgba(16,185,129,0.03))',border:'1px solid rgba(0,200,83,0.2)',borderRadius:14,padding:16}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
+          <span style={{fontSize:20}}>🏅</span>
+          <div>
+            <div style={{fontWeight:700,fontSize:13,color:'var(--green)'}}>Milestone Detected!</div>
+            <div style={{fontSize:11,color:'var(--text2)'}}>สมชาย ว. hit a big result</div>
+          </div>
+        </div>
+        <div style={{background:'var(--card)',borderRadius:10,padding:12,marginBottom:10}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:24,fontWeight:900,color:'var(--green)'}}>−7 kg in 14 days</div>
+          <div style={{fontSize:11,color:'var(--text3)',marginTop:2}}>Top 5% of all client results</div>
+        </div>
+        <div style={{background:'var(--green)',color:'#000',borderRadius:8,padding:'10px 0',textAlign:'center',fontSize:12,fontWeight:700}}>Share Hero Card →</div>
+      </div>
+      <div style={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:12,padding:12,display:'flex',alignItems:'center',gap:10}}>
+        <span style={{fontSize:16}}>📊</span>
+        <div><div style={{fontWeight:600,fontSize:12}}>วิภา ส. — 10 kg lost</div><div style={{fontSize:10,color:'var(--text3)'}}>8-week mark · Suggest sharing</div></div>
+      </div>
+    </div>
+  </>
+);
+
+const FEATURE_ICONS = ['📊','📸','🎬','✨','🔗','🏅','🏆','📂','🔔'];
+const FEATURE_PREVIEWS = [PreviewBodyComp, PreviewPhotos, PreviewShowTime, PreviewHighlights, PreviewShareLinks, PreviewMilestones, PreviewCoachProofs, PreviewLegacy, PreviewReminders];
 
 // ── Reveal hook ──
 function useReveal() {
@@ -439,7 +544,6 @@ export default function CoachProofLanding() {
           <a href="#features" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>{t.nav.features}</a>
           <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>{t.nav.results}</a>
           <a href="#how" onClick={(e) => { e.preventDefault(); scrollTo('how'); }}>{t.nav.howItWorks}</a>
-          <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo('pricing'); }}>{t.nav.pricing}</a>
           <a href="https://testflight.apple.com/join/BaS3HwKx" className="nav-cta" target="_blank" rel="noopener noreferrer">{t.nav.downloadBeta}</a>
         </div>
         <button className="lang-toggle" onClick={() => setLang(lang === 'en' ? 'th' : 'en')} aria-label="Switch language">
@@ -625,37 +729,6 @@ export default function CoachProofLanding() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section className="cp-section pricing-section" id="pricing">
-        <div className="section-inner">
-          <div className="section-tag reveal">{t.pricing.tag}</div>
-          <h2 className="section-title reveal">{t.pricing.title1}<br/>{t.pricing.title2}</h2>
-          <p className="reveal" style={{display:'inline-flex',alignItems:'center',gap:8,fontSize:12,color:'var(--green)',background:'var(--green-soft)',border:'1px solid rgba(0,200,83,0.18)',padding:'6px 14px',borderRadius:100,marginTop:12}}>{t.pricing.earlyBadge}</p>
-          <div className="pricing-grid">
-            <div className="price-card reveal reveal-d1">
-              <div className="price-tier">{t.pricing.free.tier}</div>
-              <div className="price-amount">{t.pricing.free.amount}</div>
-              <div className="price-period">{t.pricing.free.period}</div>
-              <ul className="price-features">
-                {t.pricing.free.features.map((f,i) => <li key={i}>{f}</li>)}
-              </ul>
-              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-outline" target="_blank" rel="noopener noreferrer">{t.pricing.free.cta}</a>
-            </div>
-            <div className="price-card featured reveal reveal-d2">
-              <div className="price-badge">{t.pricing.pro.badge}</div>
-              <div className="price-tier" style={{color:'var(--green2)'}}>{t.pricing.pro.tier}</div>
-              <div className="price-amount">{t.pricing.pro.amount}</div>
-              <div className="price-period">{t.pricing.pro.period}</div>
-              <ul className="price-features">
-                {t.pricing.pro.features.map((f,i) => <li key={i}>{f}</li>)}
-              </ul>
-              <a href="https://testflight.apple.com/join/BaS3HwKx" className="price-btn price-btn-solid" target="_blank" rel="noopener noreferrer">{t.pricing.pro.cta}</a>
-            </div>
-          </div>
-          <div className="price-note">{t.pricing.note}</div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="cta-section" id="cta">
         <div className="cta-glow"/>
@@ -677,7 +750,6 @@ export default function CoachProofLanding() {
         <div className="footer-links">
           <a href="#features" onClick={(e) => { e.preventDefault(); scrollTo('features'); }}>{t.footer.features}</a>
           <a href="#results" onClick={(e) => { e.preventDefault(); scrollTo('results'); }}>{t.footer.results}</a>
-          <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo('pricing'); }}>{t.footer.pricing}</a>
           <a href="mailto:hello@coachproof.app">{t.footer.contact}</a>
         </div>
         <div className="footer-copy">{t.footer.copy}</div>

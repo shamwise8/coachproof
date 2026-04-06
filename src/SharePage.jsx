@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import translations from './translations';
 
 const supabase = createClient(
   'https://sepomduzcpuwmarjvqth.supabase.co',
@@ -23,6 +24,23 @@ const SHARE_CSS = `
   font-family: 'Instrument Sans', system-ui, sans-serif;
   position: relative;
   overflow: hidden;
+}
+.share-lang-toggle {
+  position: fixed; top: 14px; right: 16px; z-index: 20;
+  display: flex; gap: 0;
+  background: rgba(17,24,39,0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(28,42,66,0.6);
+  border-radius: 8px; overflow: hidden;
+}
+.share-lang-btn {
+  padding: 6px 14px; font-size: 12px; font-weight: 700;
+  color: #64748B; background: transparent;
+  border: none; cursor: pointer; letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+.share-lang-btn.active {
+  color: #fff; background: #00C853;
 }
 @media (min-width: 820px) {
   .share-page { padding: 24px 48px; }
@@ -235,6 +253,10 @@ export default function SharePage({ token }) {
   const [checkin, setCheckin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [lang, setLang] = useState(() => localStorage.getItem('cp-lang') || 'en');
+  const t = translations[lang].share;
+
+  useEffect(() => { localStorage.setItem('cp-lang', lang); }, [lang]);
 
   useEffect(() => {
     if (!token) { setError('invalid'); setLoading(false); return; }
@@ -294,6 +316,13 @@ export default function SharePage({ token }) {
     }
   }
 
+  const langToggle = (
+    <div className="share-lang-toggle">
+      <button className={`share-lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang('en')}>EN</button>
+      <button className={`share-lang-btn ${lang === 'th' ? 'active' : ''}`} onClick={() => setLang('th')}>TH</button>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="share-page">
@@ -309,6 +338,7 @@ export default function SharePage({ token }) {
     return (
       <div className="share-page">
         <style>{SHARE_CSS}</style>
+        {langToggle}
         <div className="share-bg" />
         <div className="share-grid-bg" />
         <div style={{ ...styles.errorCard, position: 'relative', zIndex: 1 }}>
@@ -318,14 +348,12 @@ export default function SharePage({ token }) {
           </div>
           <div style={{ fontSize: 48, marginBottom: 16, marginTop: 24 }}>🔗</div>
           <h2 style={styles.errorTitle}>
-            {error === 'expired' ? 'This link is no longer active' : 'Something went wrong'}
+            {error === 'expired' ? t.linkInactive : t.somethingWrong}
           </h2>
           <p style={styles.errorSub}>
-            {error === 'expired'
-              ? 'The coach may have deactivated this share link.'
-              : 'Please try again later.'}
+            {error === 'expired' ? t.linkInactiveSub : t.tryAgain}
           </p>
-          <a href="/" style={styles.errorLink}>Visit CoachProof →</a>
+          <a href="/" style={styles.errorLink}>{t.visitSite}</a>
         </div>
       </div>
     );
@@ -353,6 +381,7 @@ export default function SharePage({ token }) {
   return (
     <div className="share-page">
       <style>{SHARE_CSS}</style>
+      {langToggle}
       <div className="share-bg" />
       <div className="share-grid-bg" />
 
@@ -360,33 +389,21 @@ export default function SharePage({ token }) {
 
         {/* Desktop side panel */}
         <div className="share-side">
-          <div className="share-side-logo">
+          <a href="/" className="share-side-logo" style={{ textDecoration: 'none' }}>
             <img src="/favicon.png" alt="CoachProof" />
             <span>Coach<span className="green">Proof</span></span>
-          </div>
+          </a>
           <div className="share-side-tagline">
-            Real results.<br/><span className="green">Tracked & verified.</span>
+            {t.tagline1}<br/><span className="green">{t.tagline2}</span>
           </div>
-          <p className="share-side-desc">
-            CoachProof is the CRM built for weight management coaches. Track body composition, capture before & after photos, and turn your best results into a closing tool.
-          </p>
+          <p className="share-side-desc">{t.desc}</p>
           <div className="share-side-features">
-            <div className="share-side-feature">
-              <div className="share-side-feature-icon">📊</div>
-              <span>Body composition tracking</span>
-            </div>
-            <div className="share-side-feature">
-              <div className="share-side-feature-icon">📸</div>
-              <span>Before & after photos</span>
-            </div>
-            <div className="share-side-feature">
-              <div className="share-side-feature-icon">🏆</div>
-              <span>CoachProofs showcase</span>
-            </div>
-            <div className="share-side-feature">
-              <div className="share-side-feature-icon">🔔</div>
-              <span>Smart check-in reminders</span>
-            </div>
+            {['📊','📸','🏆','🔔'].map((icon, i) => (
+              <div key={i} className="share-side-feature">
+                <div className="share-side-feature-icon">{icon}</div>
+                <span>{t.features[i]}</span>
+              </div>
+            ))}
           </div>
           <a
             href="https://testflight.apple.com/join/BaS3HwKx"
@@ -394,7 +411,7 @@ export default function SharePage({ token }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Download CoachProof →
+            {t.cta}
           </a>
         </div>
 
@@ -403,11 +420,11 @@ export default function SharePage({ token }) {
 
           {/* Brand header */}
           <div className="share-top-bar" style={styles.topBar}>
-            <div style={styles.brandRow}>
+            <a href="/" style={{ ...styles.brandRow, textDecoration: 'none' }}>
               <img src="/favicon.png" alt="CoachProof" style={styles.brandIcon} />
               <span style={styles.brandName}>Coach<span style={{ color: '#10B981' }}>Proof</span></span>
-            </div>
-            <div style={styles.verifiedBadge}>Verified Results</div>
+            </a>
+            <div style={styles.verifiedBadge}>{t.verifiedBadge}</div>
           </div>
 
           {/* Program header */}
@@ -421,7 +438,7 @@ export default function SharePage({ token }) {
                 <div style={styles.coachName}>Coach {coachName}</div>
               </div>
             </div>
-            {weeks && <div style={styles.duration}>{weeks}-week program</div>}
+            {weeks && <div style={styles.duration}>{weeks}{t.weekProgram}</div>}
           </div>
 
           {/* Photos */}
@@ -468,7 +485,7 @@ export default function SharePage({ token }) {
 
           {/* CTA */}
           <div className="share-cta" style={styles.cta}>
-            <div style={styles.ctaText}>Want results like this?</div>
+            <div style={styles.ctaText}>{t.wantResults}</div>
             <a
               href="https://testflight.apple.com/join/BaS3HwKx"
               className="share-cta-btn"
@@ -476,13 +493,13 @@ export default function SharePage({ token }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Download CoachProof →
+              {t.cta}
             </a>
           </div>
 
           {/* Footer branding */}
           <div style={styles.footer}>
-            <span style={styles.footerText}>Tracked & verified with</span>
+            <span style={styles.footerText}>{t.footerText}</span>
             <span style={styles.footerBrand}>CoachProof</span>
           </div>
         </div>
